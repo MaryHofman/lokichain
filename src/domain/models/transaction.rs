@@ -1,6 +1,3 @@
-use sha2::{Sha256, Digest};
-
-
 pub enum TransactionStatus {
     Pending,
     Confirmed,
@@ -17,4 +14,3 @@ pub struct Transaction {
     pub nonce: u64,
     pub status: TransactionStatus,
 }
-
