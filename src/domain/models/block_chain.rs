@@ -1,5 +1,7 @@
+use crate::domain::models::transaction::Transaction;
+use crate::domain::models::block::Block;
 
-pub struct block_chain{
+pub struct BlockChain {
     chain: Vec<Block>,
     curr_trans: Vec<Transaction>,
     difficulty: u32,
