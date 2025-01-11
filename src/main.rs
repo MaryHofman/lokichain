@@ -1,4 +1,3 @@
-use crate::domain::models::transaction::Transaction;
 
 mod domain;
 
