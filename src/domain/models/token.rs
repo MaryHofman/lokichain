@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Token {
-    pub amount: u64,
+    pub value: u64,
     pub denom: String
 }
 
@@ -12,7 +12,7 @@ impl PartialOrd for Token {
         if self.denom != other.denom {
             return None;
         }
-        Some(self.amount.cmp(&other.amount))
+        Some(self.value.cmp(&other.value))
     }
 }
 
@@ -21,7 +21,7 @@ impl Ord for Token {
         if self.denom != other.denom {
             panic!("Cannot compare tokens with different denominations");
         }
-        self.amount.cmp(&other.amount)
+        self.value.cmp(&other.value)
     }
 }
 
@@ -33,22 +33,22 @@ mod tests {
     #[test]
     fn test_equality() {
         let token1 = Token {
-            amount: 100,
+            value: 100,
             denom: "LOKI".to_string(),
         };
 
         let token2 = Token {
-            amount: 100,
+            value: 100,
             denom: "LOKI".to_string(),
         };
 
         let token3 = Token {
-            amount: 200,
+            value: 200,
             denom: "LOKI".to_string(),
         };
 
         let token4 = Token {
-            amount: 100,
+            value: 100,
             denom: "USDT".to_string(),
         };
 
@@ -60,17 +60,17 @@ mod tests {
     #[test]
     fn test_comparison() {
         let token1 = Token {
-            amount: 100,
+            value: 100,
             denom: "LOKI".to_string(),
         };
 
         let token2 = Token {
-            amount: 200,
+            value: 200,
             denom: "LOKI".to_string(),
         };
 
         let token3 = Token {
-            amount: 100,
+            value: 100,
             denom: "USDT".to_string(),
         };
 
@@ -86,12 +86,12 @@ mod tests {
     #[should_panic(expected = "Cannot compare tokens with different denominations")]
     fn test_ord_panic() {
         let token1 = Token {
-            amount: 100,
+            value: 100,
             denom: "LOKI".to_string(),
         };
 
         let token2 = Token {
-            amount: 200,
+            value: 200,
             denom: "USDT".to_string(),
         };
 
