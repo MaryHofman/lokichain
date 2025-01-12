@@ -62,7 +62,7 @@ impl<'de> Deserialize<'de> for SignKey {
 
 
 /// VerifyKey 32 bytes
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, core::hash::Hash)]
 pub struct VerifyKey(pub [u8; 32]);
 
 impl Serialize for VerifyKey {
