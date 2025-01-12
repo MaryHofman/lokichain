@@ -17,7 +17,7 @@ pub mod tests {
     use tokio::sync::RwLock;
     use crate::domain::models::address::Address;
     use crate::domain::models::app_data::AppData;
-    use crate::domain::models::signature::Signature;
+    use crate::domain::models::signature::{Signature, VerifyKey};
     use crate::domain::models::token::Token;
     use super::*;
 
@@ -73,7 +73,7 @@ pub mod tests {
             hash.clone(),
             Address {
                 network: "lokichain".to_string(),
-                hash: vec![]
+                vk: VerifyKey([0; 32])
             },
             AppData {
                 app: "bank".to_string(),
