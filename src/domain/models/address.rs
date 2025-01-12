@@ -1,7 +1,7 @@
 use bech32::{Bech32m, Hrp};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt::{Display, Formatter};
-
+use crate::domain::models::signature::VerifyKey;
 
 #[derive(Clone)]
 pub struct RawAddress {
@@ -25,19 +25,19 @@ pub struct RawAddress {
 }
 
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, core::hash::Hash)]
 pub struct Address {
     /// network tag; ex: lokichain
     pub network: String,
-    /// Public key hash
-    pub hash: Vec<u8>
+    /// Public key
+    pub vk: VerifyKey
 }
 
 
 impl Display for Address {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let hrp = Hrp::parse(&self.network).map_err(|_| std::fmt::Error)?;
-        let encoded = bech32::encode::<Bech32m>(hrp, &self.hash).map_err(serde::ser::Error::custom)?;
+        let encoded = bech32::encode::<Bech32m>(hrp, &self.vk.0).map_err(serde::ser::Error::custom)?;
         write!(f, "{}", encoded)
     }
 }
@@ -58,7 +58,12 @@ impl<'de> Deserialize<'de> for Address {
     {
         let s = String::deserialize(deserializer)?;
         let (hrp, hash) = bech32::decode(&s).map_err(serde::de::Error::custom)?;
-        Ok(Address { network: hrp.to_string(), hash })
+        Ok(Address {
+            network: hrp.to_string(),
+            vk: VerifyKey(<[u8; 32]>::try_from(hash).map_err(
+                |err| serde::de::Error::custom(format!("Err parse vk: {:?}", err))
+            )?)
+        })
     }
 }
 
@@ -71,7 +76,7 @@ mod tests {
     fn serialize_deserialize_address() {
         let original_address = Address {
             network: "lokichain".to_string(),
-            hash: vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            vk: VerifyKey([0; 32])
         };
 
         let serialized = serde_json::to_string(&original_address).unwrap();
@@ -80,7 +85,7 @@ mod tests {
 
         let new_address = Address {
             network: "lokichain".to_string(),
-            hash: vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            vk: VerifyKey([1; 32])
         };
         assert_ne!(new_address, deserialized_address);
     }
