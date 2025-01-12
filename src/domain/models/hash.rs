@@ -3,7 +3,7 @@ use base64::Engine;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// Hash 32 bytes
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, core::hash::Hash)]
 pub struct Hash(pub [u8; 32]);
 
 impl Serialize for Hash {

@@ -6,7 +6,7 @@ use crate::domain::models::token::Token;
 use serde::{Deserialize, Serialize};
 use crate::domain::models::app_data::AppData;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Transaction {
     /// Transaction hash (not including signature)
     pub hash: Hash,
