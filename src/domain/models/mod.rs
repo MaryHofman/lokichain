@@ -5,3 +5,4 @@ pub mod address;
 pub mod hash;
 pub mod signature;
 pub mod app_data;
+pub mod account;
