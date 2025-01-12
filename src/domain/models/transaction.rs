@@ -4,6 +4,7 @@ use crate::domain::models::hash::Hash;
 use crate::domain::models::signature::Signature;
 use crate::domain::models::token::Token;
 use serde::{Deserialize, Serialize};
+use crate::domain::models::app_data::AppData;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Transaction {
@@ -12,7 +13,7 @@ pub struct Transaction {
     /// Address of the sender
     pub sender: Address,
     /// Data field (for smart contract calls or arbitrary logic)
-    pub data: Vec<u8>,
+    pub data: AppData,
     /// Amount of tokens to transfer (if applicable)
     pub amount: Token,
     /// Timestamp of the transaction
@@ -38,7 +39,7 @@ impl Transaction {
     pub fn new(
         hash: Hash,
         sender: Address,
-        data: Vec<u8>,
+        data: AppData,
         amount: Token,
         gas: u64,
         nonce: u64,
