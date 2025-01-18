@@ -1,4 +1,4 @@
-<img align="right" width="25%" src="docs/img/lokichain.svg">
+<img alt="lokichain logo" align="right" width="25%" src="docs/img/lokichain.svg">
 
 # lokichain
 
@@ -17,6 +17,19 @@
 This is a young repository. Work plan:
 - [X] Blockchain domain
 - [X] PoS plan
-- [ ] Basic ligic
+- [ ] Basic logic
 - [ ] Cli
 - [ ] Api
+
+
+## Build
+
+```bash
+cargo build --release
+```
+
+## Test
+
+```bash
+cargo test
+```
