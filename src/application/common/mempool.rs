@@ -1,12 +1,12 @@
 use async_trait::async_trait;
 use crate::domain::models::hash::Hash;
-use crate::domain::models::transaction::Transaction;
+use crate::domain::models::transaction::{Transaction, TransactionWithState};
 
 #[async_trait]
 pub trait MemPool: Send + Sync {
-    async fn add(&self, transaction: Transaction);
-    async fn get(&self, hash: &Hash) -> Option<Transaction>;
-    async fn release(&self, limit: usize) -> Vec<Transaction>;
+    async fn add(&self, transaction: TransactionWithState);
+    async fn get(&self, hash: &Hash) -> Option<TransactionWithState>;
+    async fn release(&self, limit: usize) -> Vec<TransactionWithState>;
     async fn count(&self) -> usize;
 }
 
@@ -19,10 +19,11 @@ pub mod tests {
     use crate::domain::models::app_data::AppData;
     use crate::domain::models::signature::{Signature, VerifyKey};
     use crate::domain::models::token::Token;
+    use crate::domain::models::transaction::TxState;
     use super::*;
 
     pub struct MockMemPool {
-        transactions: Arc<RwLock<HashMap<Hash, Transaction>>>
+        transactions: Arc<RwLock<HashMap<Hash, TransactionWithState>>>
     }
 
     impl MockMemPool {
@@ -33,15 +34,15 @@ pub mod tests {
 
     #[async_trait]
     impl MemPool for MockMemPool {
-        async fn add(&self, transaction: Transaction) {
-            self.transactions.write().await.insert(transaction.hash.clone(), transaction);
+        async fn add(&self, transactionWithState: TransactionWithState) {
+            self.transactions.write().await.insert(transactionWithState.transaction.hash.clone(),  transactionWithState);
         }
 
-        async fn get(&self, hash: &Hash) -> Option<Transaction> {
+        async fn get(&self, hash: &Hash) -> Option<TransactionWithState> {
             self.transactions.read().await.get(hash).cloned()
         }
 
-        async fn release(&self, limit: usize) -> Vec<Transaction> {
+        async fn release(&self, limit: usize) -> Vec<TransactionWithState> {
             let mut transactions = Vec::with_capacity(limit);
             let mut tx_guard = self.transactions.write().await;
 
@@ -89,9 +90,12 @@ pub mod tests {
             Signature([0u8; 64])
         );
 
-        mempool.add(transaction.clone()).await;
+        let state = TxState::PendingConfirmation;
+        let transaction_with_state = TransactionWithState::new(&transaction, state);
+
+        mempool.add(transaction_with_state.clone()).await;
         assert_eq!(mempool.count().await, 1);
-        assert_eq!(mempool.get(&hash).await.unwrap().hash.clone(), hash.clone());
+        assert_eq!(mempool.get(&hash).await.unwrap().transaction.hash.clone(), hash.clone());
         mempool.release(1).await;
         assert_eq!(mempool.count().await, 0);
     }

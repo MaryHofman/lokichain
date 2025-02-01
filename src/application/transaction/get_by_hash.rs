@@ -48,6 +48,7 @@ mod tests {
     use crate::domain::models::hash::Hash;
     use crate::domain::models::signature::{Signature, VerifyKey};
     use crate::domain::models::token::Token;
+    use crate::domain::models::transaction::{Transaction, TxState};
 
     fn make_transaction_stub() -> Transaction {
         Transaction::new(
