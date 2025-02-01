@@ -1,4 +1,3 @@
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -574,4 +573,5 @@ mod tests {
 
         let result = interactor.execute(transaction).await;
         assert!(result.is_err());
-    } }
+    }
+}
