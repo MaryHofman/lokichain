@@ -1,4 +1,5 @@
 use async_trait::async_trait;
+
 use crate::domain::models::hash::Hash;
 
 #[async_trait]

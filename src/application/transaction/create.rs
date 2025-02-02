@@ -15,6 +15,8 @@ use crate::application::common::app_router::AppRouter;
 use crate::application::common::signer::Signer;
 use crate::domain::models::account::Account;
 
+
+
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TxBody {
     pub sender: Address,
@@ -37,11 +39,11 @@ pub struct CreateTransactionResult {
 }
 
 pub struct CreateTransaction<'a> {
-    hasher: &'a dyn Hasher,
-    mempool: &'a dyn MemPool,
-    app_router: &'a dyn AppRouter,
-    signer: &'a dyn Signer,
-    acc_storage: &'a dyn AccStorage
+    pub hasher: &'a dyn Hasher,
+    pub mempool: &'a dyn MemPool,
+    pub app_router: &'a dyn AppRouter,
+    pub signer: &'a dyn Signer,
+    pub acc_storage: &'a dyn AccStorage
 }
 
 #[async_trait]
@@ -130,7 +132,10 @@ impl Interactor<CreateTransactionRequest, CreateTransactionResult> for CreateTra
 
         Ok(CreateTransactionResult { hash })
     }
+
 }
+
+
 
 
 
