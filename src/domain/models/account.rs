@@ -1,6 +1,5 @@
 use crate::domain::models::address::Address;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::fmt::Display;
+use serde::{Deserialize, Serialize};
 use crate::domain::models::token::Token;
 
 #[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]

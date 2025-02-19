@@ -34,8 +34,8 @@ pub mod tests {
 
     #[async_trait]
     impl MemPool for MockMemPool {
-        async fn add(&self, transactionWithState: TransactionWithState) {
-            self.transactions.write().await.insert(transactionWithState.transaction.hash.clone(),  transactionWithState);
+        async fn add(&self, transaction: TransactionWithState) {
+            self.transactions.write().await.insert(transaction.transaction.hash.clone(),  transaction);
         }
 
         async fn get(&self, hash: &Hash) -> Option<TransactionWithState> {

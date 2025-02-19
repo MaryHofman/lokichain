@@ -34,7 +34,7 @@ pub struct Block {
     transactions: Vec<Transaction>
 }
 
-
+#[allow(dead_code)]
 impl Block {
     pub fn new(
         hash: Hash,
