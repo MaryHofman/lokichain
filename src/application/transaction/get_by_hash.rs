@@ -1,20 +1,10 @@
-use anyhow::Error;
-use crate::application::common::acc_storage::AccStorage;
-use crate::application::common::app_router::AppRouter;
 use crate::application::common::exceptions::ApplicationError;
-use crate::application::common::hasher::Hasher;
 use crate::application::common::interactor::Interactor;
-use crate::application::common::mempool::MemPool;
-use crate::application::common::signer::Signer;
 use crate::application::common::tx_storage::TxStorage;
-use crate::domain::models::address::Address;
-use crate::domain::models::app_data::AppData;
 use crate::domain::models::hash::Hash;
-use crate::domain::models::signature::Signature;
-use crate::domain::models::token::Token;
 use crate::domain::models::transaction::Transaction;
 use async_trait::async_trait;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 
 #[derive(Debug, Deserialize)]
@@ -28,13 +18,11 @@ pub struct GetTransactionByHash<'a> {
 
 #[async_trait]
 impl Interactor<GetTransactionByHashRequest, Transaction> for GetTransactionByHash<'_> {
-    async fn execute(
-        &self,
-        data: GetTransactionByHashRequest
-    ) -> Result<Transaction, ApplicationError> {
-
-        todo!("Implement get transaction by hash");
-
+    async fn execute(&self, data: GetTransactionByHashRequest) -> Result<Transaction, ApplicationError> {
+        match self.tx_storage.get(&data.hash).await {
+            Some(tx) => Ok(tx),
+            None => Err(ApplicationError::NotFound("Transaction not found".to_string()))
+        }
     }
 }
 
@@ -48,7 +36,7 @@ mod tests {
     use crate::domain::models::hash::Hash;
     use crate::domain::models::signature::{Signature, VerifyKey};
     use crate::domain::models::token::Token;
-    use crate::domain::models::transaction::{Transaction, TxState};
+    use crate::domain::models::transaction::Transaction;
 
     fn make_transaction_stub() -> Transaction {
         Transaction::new(
