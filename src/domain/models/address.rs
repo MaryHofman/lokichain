@@ -3,7 +3,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt::{Display, Formatter};
 use crate::domain::models::signature::VerifyKey;
 
-#[derive(Clone)]
+#[allow(dead_code)]
 pub struct RawAddress {
     /// network tag; ex: lokichain
     pub network: String,

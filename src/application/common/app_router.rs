@@ -23,14 +23,6 @@ pub mod tests {
         }
     }
 
-    
-
-    impl MockAppRouter {
-        pub fn new() -> Self {
-            MockAppRouter
-        }
-    }
-
     #[tokio::test]
     async fn test_is_exist() {
         let router = MockAppRouter;
