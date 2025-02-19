@@ -1,19 +1,18 @@
+use crate::application::common::acc_storage::AccStorage;
+use crate::application::common::app_router::AppRouter;
 use crate::application::common::exceptions::ApplicationError;
 use crate::application::common::hasher::Hasher;
 use crate::application::common::interactor::Interactor;
 use crate::application::common::mempool::MemPool;
+use crate::application::common::signer::Signer;
 use crate::domain::models::address::Address;
 use crate::domain::models::app_data::AppData;
 use crate::domain::models::hash::Hash;
 use crate::domain::models::signature::Signature;
 use crate::domain::models::token::Token;
-use crate::domain::models::transaction::{Transaction, TxState, TransactionWithState};
+use crate::domain::models::transaction::{Transaction, TransactionWithState, TxState};
 use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
-use crate::application::common::acc_storage::AccStorage;
-use crate::application::common::app_router::AppRouter;
-use crate::application::common::signer::Signer;
-use crate::domain::models::account::Account;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TxBody {
@@ -37,11 +36,11 @@ pub struct CreateTransactionResult {
 }
 
 pub struct CreateTransaction<'a> {
-    hasher: &'a dyn Hasher,
-    mempool: &'a dyn MemPool,
-    app_router: &'a dyn AppRouter,
-    signer: &'a dyn Signer,
-    acc_storage: &'a dyn AccStorage
+    pub hasher: &'a dyn Hasher,
+    pub mem_pool: &'a dyn MemPool,
+    pub app_router: &'a dyn AppRouter,
+    pub signer: &'a dyn Signer,
+    pub acc_storage: &'a dyn AccStorage
 }
 
 #[async_trait]
@@ -75,7 +74,7 @@ impl Interactor<CreateTransactionRequest, CreateTransactionResult> for CreateTra
         }
 
         
-        if self.mempool.get(&data.hash).await.is_some() {
+        if self.mem_pool.get(&data.hash).await.is_some() {
             return Err(ApplicationError::InvalidData(
                 [("hash".to_string(), "tx is already exist".to_string())].into()
             ));
@@ -126,7 +125,7 @@ impl Interactor<CreateTransactionRequest, CreateTransactionResult> for CreateTra
 
         let transaction_with_state = TransactionWithState::new(&transaction,state);
 
-        self.mempool.add(transaction_with_state).await;
+        self.mem_pool.add(transaction_with_state).await;
 
         Ok(CreateTransactionResult { hash })
     }
