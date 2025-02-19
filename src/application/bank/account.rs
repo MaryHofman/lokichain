@@ -1,16 +1,10 @@
 use crate::application::common::acc_storage::AccStorage;
-use crate::application::common::app_router::AppRouter;
 use crate::application::common::exceptions::ApplicationError;
-use crate::application::common::hasher::Hasher;
 use crate::application::common::interactor::Interactor;
-use crate::application::common::mempool::MemPool;
-use crate::application::common::signer::Signer;
-use crate::application::common::tx_storage::TxStorage;
 use crate::domain::models::account::Account;
 use crate::domain::models::address::Address;
-use crate::domain::models::token::Token;
 use async_trait::async_trait;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct GetAccountRequest {
@@ -23,13 +17,11 @@ pub struct GetAccount<'a> {
 
 #[async_trait]
 impl Interactor<GetAccountRequest, Account> for GetAccount<'_> {
-    async fn execute(
-        &self,
-        data: GetAccountRequest
-    ) -> Result<Account, ApplicationError> {
-
-        todo!("Implement get account");
-
+    async fn execute(&self, data: GetAccountRequest) -> Result<Account, ApplicationError> {
+        match self.acc_storage.get(&data.address).await {
+            Some(acc) => Ok(acc),
+            None => Err(ApplicationError::NotFound("Account not found".to_string()))
+        }
     }
 }
 
